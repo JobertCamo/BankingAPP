@@ -5,14 +5,19 @@ public class User {
     private String username;
     private String password;
     private double balance;
+    private String firstName;
+    private String lastName;
 
     public User() {}
 
-    public User(String username, String password, double balance) {
+    public User(String firstName, String lastName, String username, String password, double balance) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.username = username;
         this.password = password;
         this.balance = balance;
     }
+
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -25,4 +30,11 @@ public class User {
 
     public double getBalance() { return balance; }
     public void setBalance(double balance) { this.balance = balance; }
+
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
 }

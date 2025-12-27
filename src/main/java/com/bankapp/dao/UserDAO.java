@@ -12,13 +12,20 @@ public class UserDAO {
     public boolean save(User user) {
         if (user.getId() > 0) return update(user); // update existing
 
-        String sql = "INSERT INTO users (username, password, balance) VALUES (?, ?, ?)";
+        String sql = """
+        INSERT INTO users (first_name, last_name, username, password, balance)
+        VALUES (?, ?, ?, ?, ?)
+        """;
+
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword());
-            stmt.setDouble(3, user.getBalance());
+            stmt.setString(1, user.getFirstName());
+            stmt.setString(2, user.getLastName());
+            stmt.setString(3, user.getUsername());
+            stmt.setString(4, user.getPassword());
+            stmt.setDouble(5, user.getBalance());
+
 
             int rows = stmt.executeUpdate();
             if (rows > 0) {
@@ -57,6 +64,9 @@ public class UserDAO {
                 u.setUsername(rs.getString("username"));
                 u.setPassword(rs.getString("password"));
                 u.setBalance(rs.getDouble("balance"));
+                u.setFirstName(rs.getString("first_name"));
+                u.setLastName(rs.getString("last_name"));
+
                 return u;
             }
         } catch (Exception e) { e.printStackTrace(); }

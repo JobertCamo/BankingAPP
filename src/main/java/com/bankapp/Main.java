@@ -13,19 +13,29 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         Console console = System.console();
 
-        System.out.println("===========================");
-        System.out.println("=== Welcome to Bank App ===");
-        System.out.println("===========================");
-        System.out.println("1. Register");
-        System.out.println("2. Login");
-        System.out.print("Choose option: ");
+        System.out.println("=======================================");
+        System.out.println("|         Welcome to Bank App         |");
+        System.out.println("=======================================");
+        System.out.println("|             1. Register             |");
+        System.out.println("|             2. Login                |");
+        System.out.println("=======================================");
+        System.out.print("\nChoose option: ");
         int choice = sc.nextInt();
         sc.nextLine();
 
-        User currentUser = null;
+        User currentUser;
 
-        // Registration
+        // ===== Registration =====
         if (choice == 1) {
+            System.out.println("\n=======================================");
+            System.out.println("|             Registration            |");
+            System.out.println("=======================================");
+            System.out.print("\nEnter first name: ");
+            String firstName = sc.nextLine();
+
+            System.out.print("Enter last name: ");
+            String lastName = sc.nextLine();
+
             System.out.print("Enter username: ");
             String username = sc.nextLine();
 
@@ -38,90 +48,96 @@ public class Main {
                 password = sc.nextLine();
             }
 
-            if (authService.register(username, password)) {
-                System.out.println("===========================================");
-                System.out.println("Registration successful! You can now login.");
-                System.out.println("===========================================");
-            } else {
-                System.out.println("Registration failed. Username might already exist.");
+            boolean registered = authService.register(firstName, lastName, username, password);
+            if (!registered) {
+                System.out.println("Registration failed.");
+                return;
             }
+            System.out.println("\n=======================================");
+            System.out.println("|Registration successful Please login |");
+            System.out.println("=======================================");
         }
 
-        // Login
-        System.out.print("Enter username to login: ");
+        System.out.println("\n=======================================");
+        System.out.println("|                Login                |");
+        System.out.println("=======================================");
+        System.out.print("\nUsername: ");
         String username = sc.nextLine();
 
         String password;
         if (console != null) {
-            System.out.print("Enter password: ");
+            System.out.print("Password: ");
             password = new String(console.readPassword());
         } else {
-            System.out.print("Enter password: ");
+            System.out.print("Password: ");
             password = sc.nextLine();
         }
 
         currentUser = authService.login(username, password);
         if (currentUser == null) {
-            System.out.println("Login failed. Exiting.");
-            sc.close();
+            System.out.println("Invalid login.");
             return;
         }
 
-        // Dashboard loop
+        // ===== Dashboard =====
         boolean running = true;
         while (running) {
-            System.out.println("\n=================");
-            System.out.println("=== Dashboard ===");
-            System.out.println("=================");
-            System.out.printf("Hello, %s! Your balance: %.2f PHP%n", currentUser.getUsername(), currentUser.getBalance());
-            System.out.println("1. Balance");
-            System.out.println("2. Send Money");
-            System.out.println("3. Transaction History");
-            System.out.println("4. Logout");
-            System.out.print("Choose option: ");
+            System.out.println("=======================================");
+            System.out.println("|              Dashboard              |");
+            System.out.println("=======================================");
+            System.out.printf("          Welcome %s %s           " +
+                            "\n  Your current balance: %.2f PHP%n",
+                    currentUser.getFirstName(),
+                    currentUser.getLastName(),
+                    currentUser.getBalance());
+            System.out.println("=======================================");
+            System.out.println("             1. Balance");
+            System.out.println("             2. Deposit");
+            System.out.println("             3. Withdraw");
+            System.out.println("             4. Send Money");
+            System.out.println("             5. Transaction History");
+            System.out.println("             6. Logout");
+            System.out.println("=======================================");
+            System.out.print("\nChoose option: ");
+
             int option = sc.nextInt();
             sc.nextLine();
 
             switch (option) {
                 case 1 -> {
-                    System.out.printf("Your balance: %.2f PHP%n", currentUser.getBalance());
-                    System.out.println("Press Enter to continue...");
-                    sc.nextLine();
+                        System.out.println("=======================================");
+                        System.out.printf("         Balance: %.2f PHP%n", currentUser.getBalance());
+                        System.out.println("=======================================");
                 }
+
                 case 2 -> {
-                    System.out.print("Enter recipient username: ");
-                    String receiver = sc.nextLine();
-                    System.out.print("Enter amount to send: ");
-                    double amount = sc.nextDouble();
-                    sc.nextLine();
-
-                    // Confirm transaction
-                    System.out.print("Are you sure you want to send " + amount + " PHP to " + receiver + "? (Y/N): ");
-                    String confirm = sc.nextLine();
-                    if (!confirm.equalsIgnoreCase("Y")) {
-                        System.out.println("Transaction canceled.");
-                        break;
-                    }
-
-                    boolean success = authService.sendMoney(currentUser, receiver, amount);
-                    if (success) {
-                        currentUser = authService.login(currentUser.getUsername(), currentUser.getPassword());
-                    }
-
-                    System.out.println("Press Enter to continue...");
+                    System.out.print("Deposit amount: ");
+                    authService.deposit(currentUser, sc.nextDouble());
                     sc.nextLine();
                 }
+
                 case 3 -> {
-                    authService.printTransactionHistory(currentUser);
-                    System.out.println("Press Enter to continue...");
+                    System.out.print("Withdraw amount: ");
+                    authService.withdraw(currentUser, sc.nextDouble());
                     sc.nextLine();
                 }
+
                 case 4 -> {
-                    System.out.println("Logged out. Goodbye!");
-                    running = false;
+                    System.out.print("Recipient username: ");
+                    String receiver = sc.nextLine();
+                    System.out.print("Amount: ");
+                    authService.sendMoney(currentUser, receiver, sc.nextDouble());
+                    sc.nextLine();
                 }
-                default -> System.out.println("Invalid option! Please try again.");
+
+                case 5 -> authService.printTransactionHistory(currentUser);
+
+                case 6 -> running = false;
             }
+
+            currentUser = authService.login(currentUser.getUsername(), currentUser.getPassword());
+            System.out.println("\nPress Enter to continue...");
+            sc.nextLine();
         }
 
         sc.close();

@@ -55,4 +55,40 @@ public class TransactionDAO {
         } catch (Exception e) { e.printStackTrace(); }
         return list;
     }
+
+    public boolean saveDeposit(int userId, double amount) {
+        String sql = "INSERT INTO transactions (sender_id, receiver_id, amount) VALUES (NULL, ?, ?)";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            stmt.setDouble(2, amount);
+            stmt.executeUpdate();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean saveWithdraw(int userId, double amount) {
+        String sql = "INSERT INTO transactions (sender_id, receiver_id, amount) VALUES (?, NULL, ?)";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            stmt.setDouble(2, amount);
+            stmt.executeUpdate();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 }
