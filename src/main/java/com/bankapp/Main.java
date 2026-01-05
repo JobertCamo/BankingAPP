@@ -1,18 +1,14 @@
 package com.bankapp;
-
 import com.bankapp.model.User;
 import com.bankapp.service.AuthService;
-
 import java.io.Console;
 import java.util.Scanner;
 
 public class Main {
-
     public static void main(String[] args) {
         AuthService authService = new AuthService();
         Scanner sc = new Scanner(System.in);
         Console console = System.console();
-
         System.out.println("=======================================");
         System.out.println("|         Welcome to Bank App         |");
         System.out.println("=======================================");
@@ -25,7 +21,6 @@ public class Main {
 
         User currentUser;
 
-        // ===== Registration =====
         if (choice == 1) {
             System.out.println("\n=======================================");
             System.out.println("|             Registration            |");

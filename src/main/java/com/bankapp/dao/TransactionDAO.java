@@ -1,8 +1,6 @@
 package com.bankapp.dao;
-
 import com.bankapp.model.Transaction;
 import com.bankapp.util.Database;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

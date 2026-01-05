@@ -1,10 +1,8 @@
 package com.bankapp.service;
-
 import com.bankapp.dao.TransactionDAO;
 import com.bankapp.dao.UserDAO;
 import com.bankapp.model.Transaction;
 import com.bankapp.model.User;
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -15,7 +13,9 @@ public class AuthService {
 
     public boolean register(String firstName, String lastName, String username, String password) {
         if (userDAO.findByUsername(username) != null) {
-            System.out.println("Username already exists!");
+            System.out.println("=======================================");
+            System.out.println("        Username already exists!       ");
+            System.out.println("=======================================");
             return false;
         }
         User user = new User(firstName, lastName, username, password, 1000);
@@ -133,7 +133,9 @@ public class AuthService {
         userDAO.save(user);
         transactionDAO.saveWithdraw(user.getId(), amount);
 
-        System.out.println("Withdrawal successful!");
+        System.out.println("=======================================");
+        System.out.println("         Withdrawal successful!        ");
+        System.out.println("=======================================");
         return true;
     }
 

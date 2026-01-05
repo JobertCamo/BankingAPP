@@ -1,7 +1,5 @@
 package com.bankapp.model;
-
 import java.sql.Timestamp;
-
 public class Transaction {
 
     private int id;

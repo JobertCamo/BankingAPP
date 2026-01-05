@@ -1,8 +1,6 @@
 package com.bankapp.dao;
-
 import com.bankapp.model.User;
 import com.bankapp.util.Database;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,12 +9,10 @@ public class UserDAO {
 
     public boolean save(User user) {
         if (user.getId() > 0) return update(user); // update existing
-
         String sql = """
         INSERT INTO users (first_name, last_name, username, password, balance)
         VALUES (?, ?, ?, ?, ?)
         """;
-
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
@@ -25,7 +21,6 @@ public class UserDAO {
             stmt.setString(3, user.getUsername());
             stmt.setString(4, user.getPassword());
             stmt.setDouble(5, user.getBalance());
-
 
             int rows = stmt.executeUpdate();
             if (rows > 0) {
